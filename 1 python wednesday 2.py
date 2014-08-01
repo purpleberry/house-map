@@ -16,7 +16,7 @@ with open('pp-monthly-update-new-version.csv', newline='') as csvfile:
         postcode = row[3]
         area = postcode[:postcode.find(" ")]
         if area not in perpostcode: # create a new dictionary entry and zero it
-            perpostcode[area] = {'total': 0, 'count': 0, 'avprice': 0, 'threshold': 0}
+            perpostcode[area] = {'total': 0, 'count': 0, 'avprice': 0}
         perpostcode[area]['total'] += int(row[1])
         perpostcode[area]['count'] += 1
         total = total + int(row[1])
@@ -25,27 +25,7 @@ with open('pp-monthly-update-new-version.csv', newline='') as csvfile:
 # calculate the average values in each area and update the dictionary
 for area in perpostcode:
     perpostcode[area]['avprice'] = perpostcode[area]['total'] / perpostcode[area]['count']
-    #print (area, perpostcode[area]['avprice'],perpostcode[area]['count'])
-    if (perpostcode[area]['avprice'] >= 250000):
-        perpostcode[area]['threshold'] = 1
-    if (perpostcode[area]['avprice'] < 250000):
-        perpostcode[area]['threshold'] = 0
-    # 0 = low 1= high
-
-
-mapdata = []
-
-for area in perpostcode:
-    data = urllib.request.urlopen('http://nominatim.openstreetmap.org/search?q='+area+'&format=json')
-    data = json.loads(data.read().decode('utf8'))
-    if data:
-        lat = data[0]['lat']
-        lon = data[0]['lon']
-        mapdata.append([area,perpostcode[area],lat,lon])
-    
-print(json.dumps(mapdata, indent=4))
-
-    
+    print (area, perpostcode[area]['avprice'],perpostcode[area]['count'])
 total = 0
 count = 0
 with open('2014-04-cambridgeshire-street.csv', newline='') as policedatafile:
@@ -78,20 +58,15 @@ with open('2014-04-cambridgeshire-street.csv', newline='') as policedatafile:
 
 
 
-#lat =51.590524
-#lng = -1.415645
-#latlongurl = 'http://uk-postcodes.com/latlng/'+str(round(lat,9))+','+str(round(lng,9))+'.csv'
-#postcodecsv = urllib.request.urlopen(latlongurl).read()        
+lat =51.590524
+lng = -1.415645
+latlongurl = 'http://uk-postcodes.com/latlng/'+str(round(lat,9))+','+str(round(lng,9))+'.csv'
+postcodecsv = urllib.request.urlopen(latlongurl).read()        
 #print(postcodecsv)
-#print(perpostcode)
+print(perpostcode)
+#if (perpostcode['avprice'] > 250000):
 
-#if (crimecount[area]['count'] >= 40):
-#    crimecount[area]['threshold'] = 1
-#if (crimecount[area]['count'] < 40):
-#    crimecount[area]['threshold'] = 0
-
-
-
+#if (perpostcode['avprice'] < 250000):
 
 
 
